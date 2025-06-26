@@ -156,30 +156,45 @@ export default function TabNavigation({
             {/* Separator with hover add button */}
             {showDots && (
               <div
-                className="relative flex items-center"
+                className="relative flex items-center transition-all duration-300 ease-in-out"
                 onMouseEnter={() => setHoveredSeparator(index)}
                 onMouseLeave={() => setHoveredSeparator(null)}
               >
-                {hoveredSeparator === index && onAddPageAtIndex ? (
-                  <>
-                    {/* Left dashed line */}
-                    <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
+                {/* Left dashed line */}
+                <div
+                  className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
+                    hoveredSeparator === index && onAddPageAtIndex
+                      ? "w-5"
+                      : "w-5"
+                  }`}
+                ></div>
 
-                    {/* Hover add button */}
+                {/* Hover add button with smooth animation */}
+                <div
+                  className={`transition-all duration-300 ease-in-out ${
+                    hoveredSeparator === index && onAddPageAtIndex
+                      ? "w-5 opacity-100 scale-100"
+                      : "w-0 opacity-0 scale-75"
+                  }`}
+                >
+                  {hoveredSeparator === index && onAddPageAtIndex && (
                     <button
                       onClick={() => handleInlineAddClick(index + 1)}
-                      className="size-5 bg-white p-1 rounded-full shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group animate-in fade-in-0 zoom-in-95 duration-200"
+                      className="size-5 bg-white p-1 rounded-full shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
                     >
                       <PlusIcon className="size-3 text-black transition-transform duration-200 ease-out group-hover:scale-110 group-hover:rotate-90" />
                     </button>
+                  )}
+                </div>
 
-                    {/* Right dashed line */}
-                    <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
-                  </>
-                ) : (
-                  /* Single dashed line when not hovering */
-                  <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
-                )}
+                {/* Right dashed line */}
+                <div
+                  className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
+                    hoveredSeparator === index && onAddPageAtIndex
+                      ? "w-5"
+                      : "w-0 opacity-0"
+                  }`}
+                ></div>
               </div>
             )}
           </React.Fragment>
@@ -191,7 +206,7 @@ export default function TabNavigation({
           <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
           <button
             onClick={onAddPage}
-            className="h-8 px-2.5 py-1 bg-white rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
+            className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
           >
             <div className="w-4 h-4 flex items-center justify-center relative transition-transform duration-300 ease-out group-hover:scale-105 group-hover:rotate-90">
               <PlusIcon className="w-3 h-3 text-zinc-900" />
