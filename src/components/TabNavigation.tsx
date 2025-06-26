@@ -27,6 +27,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import TabContextMenu from "./TabContextMenu";
 import type { Tab, TabNavigationProps } from "../types/tab.types";
+import { cn } from "../utils/cn";
 
 function SortableTabItem({
   tab,
@@ -71,18 +72,15 @@ function SortableTabItem({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       disabled={tab.disabled}
-      className={`
-        h-8 px-2.5 py-1 rounded-lg flex justify-center items-center gap-1.5 text-sm font-medium font-['Inter'] leading-tight transition-all duration-300 ease-out relative group
-        ${
-          isActive
-            ? "bg-white shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200"
-            : "bg-[#9DA4B2]/15 hover:bg-[#9DA4B2]/35"
-        }
-        ${tab.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-        ${sortableIsDragging ? "cursor-grabbing" : "cursor-grab"}
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
-        transform-gpu
-      `}
+      className={cn(
+        "h-8 px-2.5 py-1 rounded-lg flex justify-center items-center gap-1.5 text-sm font-medium font-['Inter'] leading-tight transition-all duration-300 ease-out relative group",
+        isActive
+          ? "bg-white shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200"
+          : "bg-[#9DA4B2]/15 hover:bg-[#9DA4B2]/35",
+        tab.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
+        sortableIsDragging ? "cursor-grabbing" : "cursor-grab",
+        "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transform-gpu"
+      )}
       {...attributes}
       {...listeners}
     >
@@ -99,9 +97,10 @@ function SortableTabItem({
           {getIcon(tab, isActive)}
         </div>
         <span
-          className={`text-center justify-start text-sm font-medium font-['Inter'] leading-tight transition-colors duration-300 ease-out truncate ${
+          className={cn(
+            "text-center justify-start text-sm font-medium font-['Inter'] leading-tight transition-colors duration-300 ease-out truncate",
             isActive ? "text-[#1A1A1A]" : "text-[#677289]"
-          }`}
+          )}
         >
           {tab.label}
         </span>
@@ -109,9 +108,10 @@ function SortableTabItem({
 
       {/* Ellipsis positioned on the right side */}
       <div
-        className={`overflow-hidden transition-all duration-300 ease-out text-[#9DA4B2] ${
-          isActive && isHovered ? "w-3  opacity-100" : "w-0 ml-0 opacity-0"
-        }`}
+        className={cn(
+          "overflow-hidden transition-all duration-300 ease-out text-[#9DA4B2]",
+          isActive && isHovered ? "w-3 opacity-100" : "w-0 ml-0 opacity-0"
+        )}
       >
         <EllipsisVertical
           size={16}
@@ -291,7 +291,7 @@ export default function TabNavigation({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className={`flex items-center ${className}`}>
+      <div className={cn("flex items-center", className)}>
         <SortableContext
           items={currentTabs}
           strategy={horizontalListSortingStrategy}

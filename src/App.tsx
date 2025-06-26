@@ -26,7 +26,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen p-8 mx-auto max-w-4xl`}>
+    <div className="min-h-screen p-8 mx-auto max-w-4xl">
       <TabNavigation
         tabs={tabs}
         activeTabId={activeTabId}

@@ -52,7 +52,7 @@ export default function TabContextMenu({
   };
 
   const handleCopy = () => {
-    const tab = tabs.find((t) => t.id === tabId);
+    const tab = tabs.find((tab) => tab.id === tabId);
     if (tab) {
       navigator.clipboard.writeText(JSON.stringify(tab));
       console.log("Tab copied to clipboard:", tab);
@@ -80,13 +80,10 @@ export default function TabContextMenu({
         outline: "0.50px #E1E1E1 solid",
         outlineOffset: "-0.50px",
       }}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(event) => event.stopPropagation()}
     >
       <div className="h-10 bg-[#FAFBFC] border-b-[0.5px] border-[#E1E1E1] flex items-center px-3">
-        <div
-          className="text-[#1A1A1A] text-base font-medium leading-6"
-          style={{ fontFamily: "BL Melody, Inter, sans-serif" }}
-        >
+        <div className="text-[#1A1A1A] text-base font-medium leading-6">
           Settings
         </div>
       </div>
@@ -105,10 +102,7 @@ export default function TabContextMenu({
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
             <Flag className="w-4 h-4 text-[#2F72E2]" />
           </div>
-          <div
-            className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
+          <div className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4">
             Set as first page
           </div>
         </button>
@@ -122,10 +116,7 @@ export default function TabContextMenu({
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
             <Edit2 className="w-4 h-4 text-[#9DA4B2]" />
           </div>
-          <div
-            className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
+          <div className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4">
             Rename
           </div>
         </button>
@@ -139,10 +130,7 @@ export default function TabContextMenu({
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
             <Copy className="w-4 h-4 text-[#9DA4B2]" />
           </div>
-          <div
-            className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
+          <div className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4">
             Copy
           </div>
         </button>
@@ -158,10 +146,7 @@ export default function TabContextMenu({
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
             <Files className="w-4 h-4 text-[#9DA4B2]" />
           </div>
-          <div
-            className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
+          <div className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4">
             Duplicate
           </div>
         </button>
@@ -177,10 +162,7 @@ export default function TabContextMenu({
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
             <Trash2 className="w-4 h-4 text-[#EF494F]" />
           </div>
-          <div
-            className="flex-1 text-[#EF494F] text-sm font-medium leading-4"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
+          <div className="flex-1 text-[#EF494F] text-sm font-medium leading-4">
             Delete
           </div>
         </button>
