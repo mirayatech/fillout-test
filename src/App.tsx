@@ -24,15 +24,28 @@ export default function App() {
     setTabs([...tabs, newTab]);
   };
 
+  const handleAddPageAtIndex = (index: number) => {
+    const newTabId = `new-${Date.now()}`;
+    const newTab: Tab = {
+      id: newTabId,
+      label: `New ${tabs.length + 1}`,
+      type: "document",
+    };
+    const newTabs = [...tabs];
+    newTabs.splice(index, 0, newTab);
+    setTabs(newTabs);
+  };
+
   return (
     <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className=" mx-auto">
         <div className="mb-8">
           <TabNavigation
             tabs={tabs}
             activeTabId={activeTab}
             onTabChange={handleTabChange}
             onAddPage={handleAddPage}
+            onAddPageAtIndex={handleAddPageAtIndex}
             className="mb-6"
           />
         </div>

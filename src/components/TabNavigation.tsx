@@ -19,6 +19,7 @@ interface TabNavigationProps {
   activeTabId?: string;
   onTabChange?: (tabId: string) => void;
   onAddPage?: () => void;
+  onAddPageAtIndex?: (index: number) => void;
   showAddButton?: boolean;
   addButtonLabel?: string;
   className?: string;
@@ -29,12 +30,14 @@ export default function TabNavigation({
   activeTabId,
   onTabChange,
   onAddPage,
+  onAddPageAtIndex,
   showAddButton = true,
   addButtonLabel = "Add page",
   className = "",
 }: TabNavigationProps) {
   const [internalActiveTab, setInternalActiveTab] = useState(tabs[0]?.id || "");
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
+  const [hoveredSeparator, setHoveredSeparator] = useState<number | null>(null);
 
   const currentActiveTab = activeTabId || internalActiveTab;
 
@@ -43,6 +46,10 @@ export default function TabNavigation({
 
     setInternalActiveTab(tabId);
     onTabChange?.(tabId);
+  };
+
+  const handleInlineAddClick = (index: number) => {
+    onAddPageAtIndex?.(index);
   };
 
   const getIcon = (tab: Tab, isActive: boolean) => {
@@ -142,12 +149,38 @@ export default function TabNavigation({
                     : "w-0 ml-0 opacity-0"
                 }`}
               >
-                <EllipsisVertical size={16} />
+                <EllipsisVertical size={16} className="hover:text-[#1A1A1A]" />
               </div>
             </button>
 
+            {/* Separator with hover add button */}
             {showDots && (
-              <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
+              <div
+                className="relative flex items-center"
+                onMouseEnter={() => setHoveredSeparator(index)}
+                onMouseLeave={() => setHoveredSeparator(null)}
+              >
+                {hoveredSeparator === index && onAddPageAtIndex ? (
+                  <>
+                    {/* Left dashed line */}
+                    <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
+
+                    {/* Hover add button */}
+                    <button
+                      onClick={() => handleInlineAddClick(index + 1)}
+                      className="size-5 bg-white p-1 rounded-full shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group animate-in fade-in-0 zoom-in-95 duration-200"
+                    >
+                      <PlusIcon className="size-3 text-black transition-transform duration-200 ease-out group-hover:scale-110 group-hover:rotate-90" />
+                    </button>
+
+                    {/* Right dashed line */}
+                    <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
+                  </>
+                ) : (
+                  /* Single dashed line when not hovering */
+                  <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
+                )}
+              </div>
             )}
           </React.Fragment>
         );
