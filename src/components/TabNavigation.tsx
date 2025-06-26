@@ -86,20 +86,20 @@ function SortableTabItem({
       onMouseLeave={onMouseLeave}
       disabled={tab.disabled}
       className={cn(
-        "h-8 px-2.5 py-1 rounded-lg flex justify-center items-center gap-1.5 text-sm font-medium font-['Inter'] leading-tight transition-all duration-300 ease-out relative group flex-shrink-0",
+        "h-8 px-2.5 py-1 rounded-lg flex justify-center items-center gap-1.5 text-sm font-medium font-inter leading-tight transition-all duration-300 ease-out relative group flex-shrink-0",
         isActive
-          ? "bg-white shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] border border-[#E1E1E1]"
-          : "bg-[#9DA4B2]/15 hover:bg-[#9DA4B2]/35",
+          ? "bg-white shadow-tab border border-gray-200"
+          : "bg-gray-400/15 hover:bg-gray-400/35",
         tab.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
         sortableIsDragging ? "cursor-grabbing" : "cursor-grab",
-        "focus-visible:outline focus-visible:outline-[0.50px] focus-visible:outline-[#2F72E2] focus-visible:outline-offset-[-0.50px] focus-visible:shadow-[0_0_0_3px_rgba(47,114,226,0.2)] transform-gpu"
+        "focus-visible:outline focus-visible:outline-0.5 focus-visible:outline-primary-500 focus-visible:outline-offset--0.5 focus-visible:shadow-focus transform-gpu"
       )}
       {...attributes}
       {...listeners}
     >
       <div className="flex justify-center items-center gap-1.5">
         <div className="w-3 flex-shrink-0 flex justify-center items-center">
-          <GripVertical className="size-3 text-[#9DA4B2] hover:text-[#677289]" />
+          <GripVertical className="size-3 text-gray-400 hover:text-gray-500" />
         </div>
 
         <div className="transition-transform duration-300 ease-out hover:scale-105">
@@ -107,8 +107,8 @@ function SortableTabItem({
         </div>
         <span
           className={cn(
-            "text-center justify-start text-sm font-medium font-['Inter'] leading-tight transition-colors duration-300 ease-out truncate max-w-[120px]",
-            isActive ? "text-[#1A1A1A]" : "text-[#677289]"
+            "text-center justify-start text-sm font-medium font-inter leading-tight transition-colors duration-300 ease-out truncate max-w-[120px]",
+            isActive ? "text-gray-900" : "text-gray-500"
           )}
         >
           {tab.label}
@@ -117,14 +117,14 @@ function SortableTabItem({
 
       <div
         className={cn(
-          "overflow-hidden transition-all duration-300 ease-out text-[#9DA4B2]",
+          "overflow-hidden transition-all duration-300 ease-out text-gray-400",
           isActive && (isHovered || isContextMenuOpen)
             ? "w-3 opacity-100"
             : "w-0 ml-0 opacity-0"
         )}
       >
         <EllipsisVertical
-          className="size-4 hover:text-[#1A1A1A] cursor-pointer"
+          className="size-4 hover:text-gray-900 cursor-pointer"
           onClick={(e) => onEllipsisClick(e, tab.id)}
         />
       </div>
@@ -140,11 +140,11 @@ function DragOverlayTab({
   getIcon: (tab: Tab, isActive: boolean) => React.ReactNode;
 }) {
   return (
-    <div className="h-8 px-2.5 py-1 bg-white rounded-lg shadow-lg shadow-black/20 flex justify-center items-center gap-1.5 text-sm font-medium font-['Inter'] leading-tight transform rotate-2 scale-105">
+    <div className="h-8 px-2.5 py-1 bg-white rounded-lg shadow-lg shadow-black/20 flex justify-center items-center gap-1.5 text-sm font-medium font-inter leading-tight transform rotate-2 scale-105">
       <div className="flex justify-center items-center gap-1.5">
-        <GripVertical className="size-3 text-[#9DA4B2]" />
+        <GripVertical className="size-3 text-gray-400" />
         <div>{getIcon(tab, false)}</div>
-        <span className="text-center justify-start text-[#1A1A1A] text-sm font-medium font-['Inter'] leading-tight">
+        <span className="text-center justify-start text-gray-900 text-sm font-medium font-inter leading-tight truncate max-w-[120px]">
           {tab.label}
         </span>
       </div>
@@ -330,7 +330,7 @@ export default function TabNavigation({
             <FormInput
               className={cn(
                 "size-4",
-                isActive ? "text-orange-600" : "text-[#8C93A1]"
+                isActive ? "text-orange-600" : "text-gray-600"
               )}
             />
           </div>
@@ -341,7 +341,7 @@ export default function TabNavigation({
             <BookOpen
               className={cn(
                 "size-4",
-                isActive ? "text-blue-600" : "text-[#8C93A1]"
+                isActive ? "text-blue-600" : "text-gray-600"
               )}
             />
           </div>
@@ -352,7 +352,7 @@ export default function TabNavigation({
             <Heart
               className={cn(
                 "size-4",
-                isActive ? "text-red-600" : "text-[#8C93A1]"
+                isActive ? "text-red-600" : "text-gray-600"
               )}
             />
           </div>
@@ -363,7 +363,7 @@ export default function TabNavigation({
             <Eye
               className={cn(
                 "size-4",
-                isActive ? "text-purple-600" : "text-[#8C93A1]"
+                isActive ? "text-purple-600" : "text-gray-600"
               )}
             />
           </div>
@@ -374,7 +374,7 @@ export default function TabNavigation({
             <CreditCard
               className={cn(
                 "size-4",
-                isActive ? "text-pink-600" : "text-[#8C93A1]"
+                isActive ? "text-pink-600" : "text-gray-600"
               )}
             />
           </div>
@@ -385,7 +385,7 @@ export default function TabNavigation({
             <Lock
               className={cn(
                 "size-4",
-                isActive ? "text-green-600" : "text-[#8C93A1]"
+                isActive ? "text-green-600" : "text-gray-600"
               )}
             />
           </div>
@@ -396,7 +396,7 @@ export default function TabNavigation({
             <Calendar
               className={cn(
                 "size-4",
-                isActive ? "text-gray-600" : "text-[#8C93A1]"
+                isActive ? "text-gray-600" : "text-gray-600"
               )}
             />
           </div>
@@ -407,7 +407,7 @@ export default function TabNavigation({
             <InfoIcon
               className={cn(
                 "size-4",
-                isActive ? "text-amber-500" : "text-[#8C93A1]"
+                isActive ? "text-amber-500" : "text-gray-600"
               )}
             />
           </div>
@@ -418,7 +418,7 @@ export default function TabNavigation({
             <CheckCircle2
               className={cn(
                 "size-4",
-                isActive ? "text-green-600" : "text-[#8C93A1]"
+                isActive ? "text-green-600" : "text-gray-600"
               )}
             />
           </div>
@@ -430,7 +430,7 @@ export default function TabNavigation({
             <FileTextIcon
               className={cn(
                 "size-4",
-                isActive ? "text-amber-500" : "text-[#8C93A1]"
+                isActive ? "text-amber-500" : "text-gray-600"
               )}
             />
           </div>
@@ -563,7 +563,7 @@ export default function TabNavigation({
                               onClick={(e) =>
                                 handleInlineAddClick(index + 1, e)
                               }
-                              className="size-5 bg-white p-1 rounded-full shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
+                              className="size-5 bg-white p-1 rounded-full shadow-button outline outline-0.5 outline-offset--0.5 outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 "
                             >
                               <PlusIcon className="size-3 text-black transition-transform duration-200 ease-out group-hover:scale-110 group-hover:rotate-90" />
                             </button>
@@ -593,13 +593,13 @@ export default function TabNavigation({
               <button
                 ref={addButtonRef}
                 onClick={handleAddPageClick}
-                className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] border-[#E1E1E1] border flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group flex-shrink-0"
+                className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-button border-gray-200 border flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none group flex-shrink-0"
               >
-                <div className="size-4 flex items-center justify-center relative transition-transform duration-300 ease-out group-hover:scale-105 group-hover:rotate-90">
+                <div className="size-4 flex items-center justify-center relative transition-transform duration-300 ease-out ">
                   <PlusIcon className="size-4 text-zinc-900" />
                 </div>
                 <div className="relative overflow-hidden">
-                  <span className="text-center justify-start text-zinc-900 text-sm font-medium font-['Inter'] leading-tight transition-colors duration-300 ease-out">
+                  <span className="text-center justify-start text-zinc-900 text-sm font-medium font-inter leading-tight transition-colors duration-300 ease-out">
                     {addButtonLabel}
                   </span>
                 </div>
