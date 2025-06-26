@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   PlusIcon,
 } from "lucide-react";
+import TabContextMenu from "./TabContextMenu";
 
 export interface Tab {
   id: string;
@@ -38,6 +39,11 @@ export default function TabNavigation({
   const [internalActiveTab, setInternalActiveTab] = useState(tabs[0]?.id || "");
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [hoveredSeparator, setHoveredSeparator] = useState<number | null>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    tabId: string;
+    x: number;
+    y: number;
+  } | null>(null);
 
   const currentActiveTab = activeTabId || internalActiveTab;
 
@@ -51,6 +57,29 @@ export default function TabNavigation({
   const handleInlineAddClick = (index: number) => {
     onAddPageAtIndex?.(index);
   };
+
+  const handleEllipsisClick = (e: React.MouseEvent, tabId: string) => {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    setContextMenu({
+      tabId,
+      x: rect.left,
+      y: rect.bottom + 4,
+    });
+  };
+
+  const closeContextMenu = () => {
+    setContextMenu(null);
+  };
+
+  // Close context menu when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = () => closeContextMenu();
+    if (contextMenu) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [contextMenu]);
 
   const getIcon = (tab: Tab, isActive: boolean) => {
     switch (tab.type) {
@@ -149,7 +178,11 @@ export default function TabNavigation({
                     : "w-0 ml-0 opacity-0"
                 }`}
               >
-                <EllipsisVertical size={16} className="hover:text-[#1A1A1A]" />
+                <EllipsisVertical
+                  size={16}
+                  className="hover:text-[#1A1A1A] cursor-pointer"
+                  onClick={(e) => handleEllipsisClick(e, tab.id)}
+                />
               </div>
             </button>
 
@@ -219,6 +252,21 @@ export default function TabNavigation({
           </button>
         </>
       )}
+
+      {/* Context Menu */}
+      <TabContextMenu
+        isOpen={!!contextMenu}
+        position={
+          contextMenu ? { x: contextMenu.x, y: contextMenu.y } : { x: 0, y: 0 }
+        }
+        tabId={contextMenu?.tabId || ""}
+        onClose={closeContextMenu}
+        onSetAsFirstPage={(tabId) => console.log("Set as first page:", tabId)}
+        onRename={(tabId) => console.log("Rename:", tabId)}
+        onCopy={(tabId) => console.log("Copy:", tabId)}
+        onDuplicate={(tabId) => console.log("Duplicate:", tabId)}
+        onDelete={(tabId) => console.log("Delete:", tabId)}
+      />
     </div>
   );
 }
