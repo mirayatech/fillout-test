@@ -37,7 +37,6 @@ export default function PageNameModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-        {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-3">
             <div
@@ -52,7 +51,7 @@ export default function PageNameModal({
                 pageType.id === "scheduling" && "bg-gray-100 text-gray-600"
               )}
             >
-              <IconComponent size={16} />
+              <IconComponent className="w-4 h-4" />
             </div>
             <h2 className="text-lg font-semibold text-gray-900">
               Name your {pageType.name.toLowerCase()} page
@@ -66,7 +65,6 @@ export default function PageNameModal({
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-6 space-y-4">
           <div>
             <label
@@ -95,7 +93,6 @@ export default function PageNameModal({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="flex justify-end gap-3 p-6 pt-0">
           <button
             onClick={handleCancel}
