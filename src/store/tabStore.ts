@@ -7,8 +7,11 @@ import {
   insertTabAtIndex,
   getFirstAvailableTabId,
   isValidTabId,
+  generateTabId,
+  createNewTab,
 } from "../utils/tab.utils";
 import { DEFAULT_TABS } from "../constants/tab.constants";
+import type { PageType } from "../components/PageTypeModal";
 
 interface TabState {
   tabs: Tab[];
@@ -17,7 +20,13 @@ interface TabState {
   setTabs: (tabs: Tab[]) => void;
   setActiveTabId: (tabId: string) => void;
   addTab: () => void;
+  addTabWithType: (pageType: PageType, name: string) => void;
   addTabAtIndex: (index: number) => void;
+  addTabAtIndexWithType: (
+    index: number,
+    pageType: PageType,
+    name: string
+  ) => void;
   reorderTabs: (newTabs: Tab[]) => void;
   removeTab: (tabId: string) => void;
   updateTab: (tabId: string, updates: Partial<Tab>) => void;
@@ -53,9 +62,33 @@ export const useTabStore = create<TabState>()(
         set({ tabs: newTabs });
       },
 
+      addTabWithType: (pageType, name) => {
+        console.log("Adding tab with type:", pageType, "name:", name);
+        const { tabs } = get();
+        const newTab = createNewTab({
+          id: generateTabId(pageType.id),
+          label: name,
+          type: (pageType.id as Tab["type"]) || "document",
+        });
+        console.log("Created new tab:", newTab);
+        const newTabs = [...tabs, newTab];
+        set({ tabs: newTabs });
+      },
+
       addTabAtIndex: (index) => {
         const { tabs } = get();
         const newTab = createNewInsertTab(tabs);
+        const newTabs = insertTabAtIndex(tabs, newTab, index);
+        set({ tabs: newTabs });
+      },
+
+      addTabAtIndexWithType: (index, pageType, name) => {
+        const { tabs } = get();
+        const newTab = createNewTab({
+          id: generateTabId(pageType.id),
+          label: name,
+          type: (pageType.id as Tab["type"]) || "document",
+        });
         const newTabs = insertTabAtIndex(tabs, newTab, index);
         set({ tabs: newTabs });
       },
