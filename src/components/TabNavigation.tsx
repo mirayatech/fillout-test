@@ -99,10 +99,7 @@ function SortableTabItem({
     >
       <div className="flex justify-center items-center gap-1.5">
         <div className="w-3 flex-shrink-0 flex justify-center items-center">
-          <GripVertical
-            size={12}
-            className="text-[#9DA4B2] hover:text-[#677289]"
-          />
+          <GripVertical className="size-3 text-[#9DA4B2] hover:text-[#677289]" />
         </div>
 
         <div className="transition-transform duration-300 ease-out hover:scale-105">
@@ -127,8 +124,7 @@ function SortableTabItem({
         )}
       >
         <EllipsisVertical
-          size={16}
-          className="hover:text-[#1A1A1A] cursor-pointer"
+          className="size-4 hover:text-[#1A1A1A] cursor-pointer"
           onClick={(e) => onEllipsisClick(e, tab.id)}
         />
       </div>
@@ -146,7 +142,7 @@ function DragOverlayTab({
   return (
     <div className="h-8 px-2.5 py-1 bg-white rounded-lg shadow-lg shadow-black/20 flex justify-center items-center gap-1.5 text-sm font-medium font-['Inter'] leading-tight transform rotate-2 scale-105">
       <div className="flex justify-center items-center gap-1.5">
-        <GripVertical size={12} className="text-[#9DA4B2]" />
+        <GripVertical className="size-3 text-[#9DA4B2]" />
         <div>{getIcon(tab, false)}</div>
         <span className="text-center justify-start text-[#1A1A1A] text-sm font-medium font-['Inter'] leading-tight">
           {tab.label}
@@ -161,7 +157,6 @@ export default function TabNavigation({
   activeTabId,
   onTabChange,
   onTabsReorder,
-  onAddPage,
   onAddPageAtIndex,
   onAddPageWithType,
   onAddPageAtIndexWithType,
@@ -331,104 +326,112 @@ export default function TabNavigation({
     switch (tab.type) {
       case "form":
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
+          <div className="flex items-center">
             <FormInput
-              className={`w-4 h-4 ${
+              className={cn(
+                "size-4",
                 isActive ? "text-orange-600" : "text-[#8C93A1]"
-              }`}
+              )}
             />
           </div>
         );
       case "cover":
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
+          <div className="justify-center flex items-center">
             <BookOpen
-              className={`w-4 h-4 ${
+              className={cn(
+                "size-4",
                 isActive ? "text-blue-600" : "text-[#8C93A1]"
-              }`}
+              )}
             />
           </div>
         );
       case "ending":
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
+          <div className="justify-center flex items-center">
             <Heart
-              className={`w-4 h-4 ${
+              className={cn(
+                "size-4",
                 isActive ? "text-red-600" : "text-[#8C93A1]"
-              }`}
+              )}
             />
           </div>
         );
       case "review":
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
+          <div className="justify-center flex items-center">
             <Eye
-              className={`w-4 h-4 ${
+              className={cn(
+                "size-4",
                 isActive ? "text-purple-600" : "text-[#8C93A1]"
-              }`}
+              )}
             />
           </div>
         );
       case "payment":
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
+          <div className="justify-center flex items-center">
             <CreditCard
-              className={`w-4 h-4 ${
+              className={cn(
+                "size-4",
                 isActive ? "text-pink-600" : "text-[#8C93A1]"
-              }`}
+              )}
             />
           </div>
         );
       case "login":
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
+          <div className="justify-center flex items-center">
             <Lock
-              className={`w-4 h-4 ${
+              className={cn(
+                "size-4",
                 isActive ? "text-green-600" : "text-[#8C93A1]"
-              }`}
+              )}
             />
           </div>
         );
       case "scheduling":
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
+          <div className="justify-center flex items-center">
             <Calendar
-              className={`w-4 h-4 ${
+              className={cn(
+                "size-4",
                 isActive ? "text-gray-600" : "text-[#8C93A1]"
-              }`}
+              )}
             />
           </div>
         );
       case "info":
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
-            <div
-              className={`w-4 h-4 left-[2.29px] top-[2.29px] absolute rounded-full flex items-center justify-center ${
-                isActive ? "bg-amber-500" : "bg-[#8C93A1]"
-              }`}
-            >
-              <InfoIcon className="w-3 h-3 text-white" />
-            </div>
+          <div className="justify-center flex items-center">
+            <InfoIcon
+              className={cn(
+                "size-4",
+                isActive ? "text-amber-500" : "text-[#8C93A1]"
+              )}
+            />
           </div>
         );
       case "completed":
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
+          <div className="justify-center flex items-center">
             <CheckCircle2
-              className={`w-4 h-4 ${
+              className={cn(
+                "size-4",
                 isActive ? "text-green-600" : "text-[#8C93A1]"
-              }`}
+              )}
             />
           </div>
         );
       case "document":
       default:
         return (
-          <div className="w-5 h-5 relative overflow-hidden flex items-center">
+          <div className="justify-center flex items-center">
             <FileTextIcon
-              className={`w-4 h-4 ${
+              className={cn(
+                "size-4",
                 isActive ? "text-amber-500" : "text-[#8C93A1]"
-              }`}
+              )}
             />
           </div>
         );
@@ -469,37 +472,35 @@ export default function TabNavigation({
       onDragEnd={handleDragEnd}
     >
       <div className={cn("relative", className)}>
-        {/* Scroll buttons positioned above the add button */}
         {showScrollButtons && (
           <div className="absolute right-0 -top-10 flex items-center gap-1 z-20">
             <button
               onClick={scrollLeft}
               disabled={!canScrollLeft}
               className={cn(
-                "h-6 w-6 bg-white rounded shadow-sm border border-gray-200 flex items-center justify-center transition-all duration-200",
+                "size-6 bg-white rounded shadow-sm border border-gray-200 flex items-center justify-center transition-all duration-200",
                 canScrollLeft
                   ? "opacity-100 hover:shadow-md hover:bg-gray-50"
                   : "opacity-40 cursor-not-allowed"
               )}
             >
-              <ChevronLeft size={12} className="text-gray-600" />
+              <ChevronLeft className="size-3 text-gray-600" />
             </button>
             <button
               onClick={scrollRight}
               disabled={!canScrollRight}
               className={cn(
-                "h-6 w-6 bg-white rounded shadow-sm border border-gray-200 flex items-center justify-center transition-all duration-200",
+                "size-6 bg-white rounded shadow-sm border border-gray-200 flex items-center justify-center transition-all duration-200",
                 canScrollRight
                   ? "opacity-100 hover:shadow-md hover:bg-gray-50"
                   : "opacity-40 cursor-not-allowed"
               )}
             >
-              <ChevronRight size={12} className="text-gray-600" />
+              <ChevronRight className="size-3 text-gray-600" />
             </button>
           </div>
         )}
 
-        {/* Scrollable container */}
         <div
           ref={scrollContainerRef}
           className="flex items-center overflow-x-auto scrollbar-hide scroll-smooth whitespace-nowrap min-w-0 flex-1"
@@ -535,23 +536,25 @@ export default function TabNavigation({
                       onMouseLeave={() => setHoveredSeparator(null)}
                     >
                       <div
-                        className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
+                        className={cn(
+                          "h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out",
                           (hoveredSeparator === index ||
                             activeSeparatorIndex === index) &&
-                          onAddPageAtIndex
+                            onAddPageAtIndex
                             ? "w-5"
                             : "w-5"
-                        }`}
+                        )}
                       ></div>
 
                       <div
-                        className={`transition-all duration-300 ease-in-out ${
+                        className={cn(
+                          "transition-all duration-300 ease-in-out",
                           (hoveredSeparator === index ||
                             activeSeparatorIndex === index) &&
-                          onAddPageAtIndex
+                            onAddPageAtIndex
                             ? "w-5 opacity-100 scale-100"
                             : "w-0 opacity-0 scale-75"
-                        }`}
+                        )}
                       >
                         {(hoveredSeparator === index ||
                           activeSeparatorIndex === index) &&
@@ -568,13 +571,14 @@ export default function TabNavigation({
                       </div>
 
                       <div
-                        className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
+                        className={cn(
+                          "h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out",
                           (hoveredSeparator === index ||
                             activeSeparatorIndex === index) &&
-                          onAddPageAtIndex
+                            onAddPageAtIndex
                             ? "w-5"
                             : "w-0 opacity-0"
-                        }`}
+                        )}
                       ></div>
                     </div>
                   )}
@@ -591,8 +595,8 @@ export default function TabNavigation({
                 onClick={handleAddPageClick}
                 className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] border-[#E1E1E1] border flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group flex-shrink-0"
               >
-                <div className="w-4 h-4 flex items-center justify-center relative transition-transform duration-300 ease-out group-hover:scale-105 group-hover:rotate-90">
-                  <PlusIcon className="w-3 h-3 text-zinc-900" />
+                <div className="size-4 flex items-center justify-center relative transition-transform duration-300 ease-out group-hover:scale-105 group-hover:rotate-90">
+                  <PlusIcon className="size-4 text-zinc-900" />
                 </div>
                 <div className="relative overflow-hidden">
                   <span className="text-center justify-start text-zinc-900 text-sm font-medium font-['Inter'] leading-tight transition-colors duration-300 ease-out">
@@ -603,7 +607,6 @@ export default function TabNavigation({
             </>
           )}
         </div>
-
         <TabContextMenu
           isOpen={!!contextMenu}
           position={
@@ -614,7 +617,6 @@ export default function TabNavigation({
           tabId={contextMenu?.tabId || ""}
           onClose={closeContextMenu}
         />
-
         <PageTypeModal
           isOpen={showPageTypeModal}
           onClose={() => {
@@ -625,7 +627,6 @@ export default function TabNavigation({
           onSelectPageType={handlePageTypeSelect}
           position={addButtonPosition}
         />
-
         <PageNameModal
           isOpen={showPageNameModal}
           onClose={handlePageNameCancel}
