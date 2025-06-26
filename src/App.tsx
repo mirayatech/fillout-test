@@ -1,55 +1,41 @@
-import { useState } from "react";
-import TabNavigation, { type Tab } from "./components/TabNavigation";
+import TabNavigation from "./components/TabNavigation";
+import { useTabStore } from "./store/tabStore";
+import type { Tab } from "./types/tab.types";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("info");
-  const [tabs, setTabs] = useState<Tab[]>([
-    { id: "info", label: "Info", type: "info" },
-    { id: "details", label: "Details", type: "document" },
-    { id: "other", label: "Other", type: "document" },
-    { id: "ending", label: "Ending", type: "completed" },
-  ]);
+  const {
+    tabs,
+    activeTabId,
+    setActiveTabId,
+    reorderTabs,
+    addTab,
+    addTabAtIndex,
+  } = useTabStore();
 
   const handleTabChange = (tabId: string) => {
-    setActiveTab(tabId);
+    setActiveTabId(tabId);
+    console.log("Tab changed to:", tabId);
   };
 
-  const handleAddPage = () => {
-    const newTabId = `page-${tabs.length + 1}`;
-    const newTab: Tab = {
-      id: newTabId,
-      label: `Page ${tabs.length + 1}`,
-      type: "document",
-    };
-    setTabs([...tabs, newTab]);
-  };
-
-  const handleAddPageAtIndex = (index: number) => {
-    const newTabId = `new-${Date.now()}`;
-    const newTab: Tab = {
-      id: newTabId,
-      label: `New ${tabs.length + 1}`,
-      type: "document",
-    };
-    const newTabs = [...tabs];
-    newTabs.splice(index, 0, newTab);
-    setTabs(newTabs);
+  const handleTabsReorder = (newTabs: Tab[]) => {
+    reorderTabs(newTabs);
+    console.log(
+      "Tabs reordered:",
+      newTabs.map((tab) => tab.label)
+    );
   };
 
   return (
-    <div className="min-h-screen p-8">
-      <div className=" mx-auto">
-        <div className="mb-8">
-          <TabNavigation
-            tabs={tabs}
-            activeTabId={activeTab}
-            onTabChange={handleTabChange}
-            onAddPage={handleAddPage}
-            onAddPageAtIndex={handleAddPageAtIndex}
-            className="mb-6"
-          />
-        </div>
-      </div>
+    <div className={`min-h-screen p-8 mx-auto max-w-4xl`}>
+      <TabNavigation
+        tabs={tabs}
+        activeTabId={activeTabId}
+        onTabChange={handleTabChange}
+        onTabsReorder={handleTabsReorder}
+        onAddPage={addTab}
+        onAddPageAtIndex={addTabAtIndex}
+        className="mb-6"
+      />
     </div>
   );
 }
