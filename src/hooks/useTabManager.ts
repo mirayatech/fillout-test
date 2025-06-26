@@ -6,7 +6,7 @@ import {
   insertTabAtIndex,
   getFirstAvailableTabId,
   isValidTabId,
-} from "../utils/tab.utils";
+} from "../utils/tab";
 
 interface UseTabManagerOptions {
   initialTabs: Tab[];

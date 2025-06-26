@@ -9,7 +9,7 @@ import {
   isValidTabId,
   generateTabId,
   createNewTab,
-} from "../utils/tab.utils";
+} from "../utils/tab";
 import { DEFAULT_TABS } from "../constants/tab.constants";
 import type { PageType } from "../components/PageTypeModal";
 
