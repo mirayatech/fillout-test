@@ -5,50 +5,186 @@ import {
   FileTextIcon,
   CheckCircle2,
   PlusIcon,
+  GripVertical,
 } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+} from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import TabContextMenu from "./TabContextMenu";
+import type { Tab, TabNavigationProps } from "../types/tab.types";
 
-export interface Tab {
-  id: string;
-  label: string;
-  type?: "info" | "document" | "completed" | "default";
-  disabled?: boolean;
+function SortableTabItem({
+  tab,
+  isActive,
+  isHovered,
+  onTabClick,
+  onMouseEnter,
+  onMouseLeave,
+  onEllipsisClick,
+  getIcon,
+}: {
+  tab: Tab;
+  isActive: boolean;
+  isHovered: boolean;
+  onTabClick: (tabId: string) => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  onEllipsisClick: (e: React.MouseEvent, tabId: string) => void;
+  getIcon: (tab: Tab, isActive: boolean) => React.ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging: sortableIsDragging,
+  } = useSortable({ id: tab.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition: transition || "transform 200ms ease",
+    opacity: sortableIsDragging ? 0.5 : 1,
+    zIndex: sortableIsDragging ? 1000 : 1,
+  };
+
+  return (
+    <button
+      ref={setNodeRef}
+      style={style}
+      onClick={() => onTabClick(tab.id)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      disabled={tab.disabled}
+      className={`
+        h-8 px-2.5 py-1 rounded-lg flex justify-center items-center gap-1.5 text-sm font-medium font-['Inter'] leading-tight transition-all duration-300 ease-out relative group
+        ${
+          isActive
+            ? "bg-white shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200"
+            : "bg-[#9DA4B2]/15 hover:bg-[#9DA4B2]/35"
+        }
+        ${tab.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+        ${sortableIsDragging ? "cursor-grabbing" : "cursor-grab"}
+        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
+        transform-gpu
+      `}
+      {...attributes}
+      {...listeners}
+    >
+      <div className="flex justify-center items-center gap-1.5">
+        {/* Drag handle always visible */}
+        <div className="w-3 flex-shrink-0 flex justify-center items-center">
+          <GripVertical
+            size={12}
+            className="text-[#9DA4B2] hover:text-[#677289]"
+          />
+        </div>
+
+        <div className="transition-transform duration-300 ease-out hover:scale-105">
+          {getIcon(tab, isActive)}
+        </div>
+        <span
+          className={`text-center justify-start text-sm font-medium font-['Inter'] leading-tight transition-colors duration-300 ease-out truncate ${
+            isActive ? "text-[#1A1A1A]" : "text-[#677289]"
+          }`}
+        >
+          {tab.label}
+        </span>
+      </div>
+
+      {/* Ellipsis positioned on the right side */}
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-out text-[#9DA4B2] ${
+          isActive && isHovered ? "w-3  opacity-100" : "w-0 ml-0 opacity-0"
+        }`}
+      >
+        <EllipsisVertical
+          size={16}
+          className="hover:text-[#1A1A1A] cursor-pointer"
+          onClick={(e) => onEllipsisClick(e, tab.id)}
+        />
+      </div>
+    </button>
+  );
 }
 
-interface TabNavigationProps {
-  tabs: Tab[];
-  activeTabId?: string;
-  onTabChange?: (tabId: string) => void;
-  onAddPage?: () => void;
-  onAddPageAtIndex?: (index: number) => void;
-  showAddButton?: boolean;
-  addButtonLabel?: string;
-  className?: string;
+function DragOverlayTab({
+  tab,
+  getIcon,
+}: {
+  tab: Tab;
+  getIcon: (tab: Tab, isActive: boolean) => React.ReactNode;
+}) {
+  return (
+    <div className="h-8 px-2.5 py-1 bg-white rounded-lg shadow-lg shadow-black/20 flex justify-center items-center gap-1.5 text-sm font-medium font-['Inter'] leading-tight transform rotate-2 scale-105">
+      <div className="flex justify-center items-center gap-1.5">
+        <GripVertical size={12} className="text-[#9DA4B2]" />
+        <div>{getIcon(tab, false)}</div>
+        <span className="text-center justify-start text-[#1A1A1A] text-sm font-medium font-['Inter'] leading-tight">
+          {tab.label}
+        </span>
+      </div>
+    </div>
+  );
 }
 
 export default function TabNavigation({
   tabs,
   activeTabId,
   onTabChange,
+  onTabsReorder,
   onAddPage,
   onAddPageAtIndex,
   showAddButton = true,
   addButtonLabel = "Add page",
   className = "",
 }: TabNavigationProps) {
+  const [internalTabs, setInternalTabs] = useState(tabs);
   const [internalActiveTab, setInternalActiveTab] = useState(tabs[0]?.id || "");
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [hoveredSeparator, setHoveredSeparator] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{
     tabId: string;
     x: number;
     y: number;
   } | null>(null);
 
+  React.useEffect(() => {
+    setInternalTabs(tabs);
+  }, [tabs]);
+
+  const currentTabs = internalTabs;
   const currentActiveTab = activeTabId || internalActiveTab;
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const handleTabClick = (tabId: string) => {
-    if (tabs.find((tab) => tab.id === tabId)?.disabled) return;
+    if (currentTabs.find((tab) => tab.id === tabId)?.disabled) return;
 
     setInternalActiveTab(tabId);
     onTabChange?.(tabId);
@@ -72,7 +208,25 @@ export default function TabNavigation({
     setContextMenu(null);
   };
 
-  // Close context menu when clicking outside
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = currentTabs.findIndex((tab) => tab.id === active.id);
+      const newIndex = currentTabs.findIndex((tab) => tab.id === over?.id);
+
+      const newTabs = arrayMove(currentTabs, oldIndex, newIndex);
+      setInternalTabs(newTabs);
+      onTabsReorder?.(newTabs);
+    }
+
+    setActiveId(null);
+  };
+
   React.useEffect(() => {
     const handleClickOutside = () => closeContextMenu();
     if (contextMenu) {
@@ -128,145 +282,125 @@ export default function TabNavigation({
     }
   };
 
-  return (
-    <div className={`flex items-center ${className}`}>
-      {tabs.map((tab, index) => {
-        const isActive = currentActiveTab === tab.id;
-        const isHovered = hoveredTab === tab.id;
-        const showDots = index < tabs.length - 1;
+  const activeDragTab = currentTabs.find((tab) => tab.id === activeId);
 
-        return (
-          <React.Fragment key={tab.id}>
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div className={`flex items-center ${className}`}>
+        <SortableContext
+          items={currentTabs}
+          strategy={horizontalListSortingStrategy}
+        >
+          {currentTabs.map((tab, index) => {
+            const isActive = currentActiveTab === tab.id;
+            const isHovered = hoveredTab === tab.id;
+            const showDots = index < currentTabs.length - 1;
+
+            return (
+              <React.Fragment key={tab.id}>
+                <SortableTabItem
+                  tab={tab}
+                  isActive={isActive}
+                  isHovered={isHovered}
+                  onTabClick={handleTabClick}
+                  onMouseEnter={() => setHoveredTab(tab.id)}
+                  onMouseLeave={() => setHoveredTab(null)}
+                  onEllipsisClick={handleEllipsisClick}
+                  getIcon={getIcon}
+                />
+
+                {/* Separator with hover add button */}
+                {showDots && (
+                  <div
+                    className="relative flex items-center transition-all duration-300 ease-in-out"
+                    onMouseEnter={() => setHoveredSeparator(index)}
+                    onMouseLeave={() => setHoveredSeparator(null)}
+                  >
+                    {/* Left dashed line */}
+                    <div
+                      className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
+                        hoveredSeparator === index && onAddPageAtIndex
+                          ? "w-5"
+                          : "w-5"
+                      }`}
+                    ></div>
+
+                    {/* Hover add button with smooth animation */}
+                    <div
+                      className={`transition-all duration-300 ease-in-out ${
+                        hoveredSeparator === index && onAddPageAtIndex
+                          ? "w-5 opacity-100 scale-100"
+                          : "w-0 opacity-0 scale-75"
+                      }`}
+                    >
+                      {hoveredSeparator === index && onAddPageAtIndex && (
+                        <button
+                          onClick={() => handleInlineAddClick(index + 1)}
+                          className="size-5 bg-white p-1 rounded-full shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
+                        >
+                          <PlusIcon className="size-3 text-black transition-transform duration-200 ease-out group-hover:scale-110 group-hover:rotate-90" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Right dashed line */}
+                    <div
+                      className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
+                        hoveredSeparator === index && onAddPageAtIndex
+                          ? "w-5"
+                          : "w-0 opacity-0"
+                      }`}
+                    ></div>
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </SortableContext>
+
+        {showAddButton && (
+          <>
+            <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
             <button
-              onClick={() => handleTabClick(tab.id)}
-              onMouseEnter={() => setHoveredTab(tab.id)}
-              onMouseLeave={() => setHoveredTab(null)}
-              disabled={tab.disabled}
-              className={`
-                h-8 px-2.5 py-1 rounded-lg flex justify-center items-center gap-1.5 text-sm font-medium font-['Inter'] leading-tight transition-all duration-300 ease-out relative group
-                ${
-                  isActive
-                    ? "bg-white shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200"
-                    : "bg-[#9DA4B2]/15 hover:bg-[#9DA4B2]/35"
-                }
-                ${
-                  tab.disabled
-                    ? "opacity-50 cursor-not-allowed"
-                    : "cursor-pointer"
-                }
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
-              `}
+              onClick={onAddPage}
+              className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
             >
-              <div className="flex justify-center items-center gap-1.5">
-                <div className="transition-transform duration-300 ease-out hover:scale-105">
-                  {getIcon(tab, isActive)}
-                </div>
-                <span
-                  className={`text-center justify-start text-sm font-medium font-['Inter'] leading-tight transition-colors duration-300 ease-out ${
-                    isActive ? "text-[#1A1A1A]" : "text-[#677289]"
-                  }`}
-                >
-                  {tab.label}
+              <div className="w-4 h-4 flex items-center justify-center relative transition-transform duration-300 ease-out group-hover:scale-105 group-hover:rotate-90">
+                <PlusIcon className="w-3 h-3 text-zinc-900" />
+              </div>
+              <div className="relative overflow-hidden">
+                <span className="text-center justify-start text-zinc-900 text-sm font-medium font-['Inter'] leading-tight transition-colors duration-300 ease-out">
+                  {addButtonLabel}
                 </span>
               </div>
-
-              {/* Ellipsis positioned on the right side */}
-              <div
-                className={`overflow-hidden transition-all duration-300 ease-out text-[#9DA4B2] ${
-                  isActive && isHovered
-                    ? "w-3  opacity-100"
-                    : "w-0 ml-0 opacity-0"
-                }`}
-              >
-                <EllipsisVertical
-                  size={16}
-                  className="hover:text-[#1A1A1A] cursor-pointer"
-                  onClick={(e) => handleEllipsisClick(e, tab.id)}
-                />
-              </div>
             </button>
+          </>
+        )}
 
-            {/* Separator with hover add button */}
-            {showDots && (
-              <div
-                className="relative flex items-center transition-all duration-300 ease-in-out"
-                onMouseEnter={() => setHoveredSeparator(index)}
-                onMouseLeave={() => setHoveredSeparator(null)}
-              >
-                {/* Left dashed line */}
-                <div
-                  className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
-                    hoveredSeparator === index && onAddPageAtIndex
-                      ? "w-5"
-                      : "w-5"
-                  }`}
-                ></div>
+        {/* Context Menu */}
+        <TabContextMenu
+          isOpen={!!contextMenu}
+          position={
+            contextMenu
+              ? { x: contextMenu.x, y: contextMenu.y }
+              : { x: 0, y: 0 }
+          }
+          tabId={contextMenu?.tabId || ""}
+          onClose={closeContextMenu}
+        />
+      </div>
 
-                {/* Hover add button with smooth animation */}
-                <div
-                  className={`transition-all duration-300 ease-in-out ${
-                    hoveredSeparator === index && onAddPageAtIndex
-                      ? "w-5 opacity-100 scale-100"
-                      : "w-0 opacity-0 scale-75"
-                  }`}
-                >
-                  {hoveredSeparator === index && onAddPageAtIndex && (
-                    <button
-                      onClick={() => handleInlineAddClick(index + 1)}
-                      className="size-5 bg-white p-1 rounded-full shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
-                    >
-                      <PlusIcon className="size-3 text-black transition-transform duration-200 ease-out group-hover:scale-110 group-hover:rotate-90" />
-                    </button>
-                  )}
-                </div>
-
-                {/* Right dashed line */}
-                <div
-                  className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
-                    hoveredSeparator === index && onAddPageAtIndex
-                      ? "w-5"
-                      : "w-0 opacity-0"
-                  }`}
-                ></div>
-              </div>
-            )}
-          </React.Fragment>
-        );
-      })}
-
-      {showAddButton && (
-        <>
-          <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
-          <button
-            onClick={onAddPage}
-            className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
-          >
-            <div className="w-4 h-4 flex items-center justify-center relative transition-transform duration-300 ease-out group-hover:scale-105 group-hover:rotate-90">
-              <PlusIcon className="w-3 h-3 text-zinc-900" />
-            </div>
-            <div className="relative overflow-hidden">
-              <span className="text-center justify-start text-zinc-900 text-sm font-medium font-['Inter'] leading-tight transition-colors duration-300 ease-out">
-                {addButtonLabel}
-              </span>
-            </div>
-          </button>
-        </>
-      )}
-
-      {/* Context Menu */}
-      <TabContextMenu
-        isOpen={!!contextMenu}
-        position={
-          contextMenu ? { x: contextMenu.x, y: contextMenu.y } : { x: 0, y: 0 }
-        }
-        tabId={contextMenu?.tabId || ""}
-        onClose={closeContextMenu}
-        onSetAsFirstPage={(tabId) => console.log("Set as first page:", tabId)}
-        onRename={(tabId) => console.log("Rename:", tabId)}
-        onCopy={(tabId) => console.log("Copy:", tabId)}
-        onDuplicate={(tabId) => console.log("Duplicate:", tabId)}
-        onDelete={(tabId) => console.log("Delete:", tabId)}
-      />
-    </div>
+      {/* Drag Overlay */}
+      <DragOverlay>
+        {activeDragTab ? (
+          <DragOverlayTab tab={activeDragTab} getIcon={getIcon} />
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 }
