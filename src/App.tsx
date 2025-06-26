@@ -10,6 +10,8 @@ export default function App() {
     reorderTabs,
     addTab,
     addTabAtIndex,
+    addTabWithType,
+    addTabAtIndexWithType,
   } = useTabStore();
 
   const handleTabChange = (tabId: string) => {
@@ -26,16 +28,20 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen p-8 mx-auto max-w-4xl">
-      <TabNavigation
-        tabs={tabs}
-        activeTabId={activeTabId}
-        onTabChange={handleTabChange}
-        onTabsReorder={handleTabsReorder}
-        onAddPage={addTab}
-        onAddPageAtIndex={addTabAtIndex}
-        className="mb-6"
-      />
+    <div className="min-h-screen p-8 mx-auto max-w-5xl">
+      <div className="pt-12">
+        <TabNavigation
+          tabs={tabs}
+          activeTabId={activeTabId}
+          onTabChange={handleTabChange}
+          onTabsReorder={handleTabsReorder}
+          onAddPage={addTab}
+          onAddPageWithType={addTabWithType}
+          onAddPageAtIndex={addTabAtIndex}
+          onAddPageAtIndexWithType={addTabAtIndexWithType}
+          className="mb-6"
+        />
+      </div>
     </div>
   );
 }
