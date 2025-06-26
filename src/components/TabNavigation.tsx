@@ -75,7 +75,7 @@ function SortableTabItem({
       className={cn(
         "h-8 px-2.5 py-1 rounded-lg flex justify-center items-center gap-1.5 text-sm font-medium font-['Inter'] leading-tight transition-all duration-300 ease-out relative group",
         isActive
-          ? "bg-white shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200"
+          ? "bg-white shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] border border-[#E1E1E1]"
           : "bg-[#9DA4B2]/15 hover:bg-[#9DA4B2]/35",
         tab.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
         sortableIsDragging ? "cursor-grabbing" : "cursor-grab",
@@ -368,7 +368,7 @@ export default function TabNavigation({
             <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed"></div>
             <button
               onClick={onAddPage}
-              className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] outline outline-[0.50px] outline-offset-[-0.50px] outline-neutral-200 flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
+              className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-[0px_1px_3px_0px_rgba(0,0,0,0.04)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.02)] border-[#E1E1E1] border flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
             >
               <div className="w-4 h-4 flex items-center justify-center relative transition-transform duration-300 ease-out group-hover:scale-105 group-hover:rotate-90">
                 <PlusIcon className="w-3 h-3 text-zinc-900" />
