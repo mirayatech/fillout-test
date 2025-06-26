@@ -38,6 +38,7 @@ function SortableTabItem({
   onMouseLeave,
   onEllipsisClick,
   getIcon,
+  isContextMenuOpen,
 }: {
   tab: Tab;
   isActive: boolean;
@@ -47,6 +48,7 @@ function SortableTabItem({
   onMouseLeave: () => void;
   onEllipsisClick: (e: React.MouseEvent, tabId: string) => void;
   getIcon: (tab: Tab, isActive: boolean) => React.ReactNode;
+  isContextMenuOpen: boolean;
 }) {
   const {
     attributes,
@@ -79,13 +81,12 @@ function SortableTabItem({
           : "bg-[#9DA4B2]/15 hover:bg-[#9DA4B2]/35",
         tab.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
         sortableIsDragging ? "cursor-grabbing" : "cursor-grab",
-        "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transform-gpu"
+        "focus-visible:outline focus-visible:outline-[0.50px] focus-visible:outline-[#2F72E2] focus-visible:outline-offset-[-0.50px] focus-visible:shadow-[0_0_0_3px_rgba(47,114,226,0.2)] transform-gpu"
       )}
       {...attributes}
       {...listeners}
     >
       <div className="flex justify-center items-center gap-1.5">
-        {/* Drag handle always visible */}
         <div className="w-3 flex-shrink-0 flex justify-center items-center">
           <GripVertical
             size={12}
@@ -106,11 +107,12 @@ function SortableTabItem({
         </span>
       </div>
 
-      {/* Ellipsis positioned on the right side */}
       <div
         className={cn(
           "overflow-hidden transition-all duration-300 ease-out text-[#9DA4B2]",
-          isActive && isHovered ? "w-3 opacity-100" : "w-0 ml-0 opacity-0"
+          isActive && (isHovered || isContextMenuOpen)
+            ? "w-3 opacity-100"
+            : "w-0 ml-0 opacity-0"
         )}
       >
         <EllipsisVertical
@@ -312,16 +314,15 @@ export default function TabNavigation({
                   onMouseLeave={() => setHoveredTab(null)}
                   onEllipsisClick={handleEllipsisClick}
                   getIcon={getIcon}
+                  isContextMenuOpen={contextMenu?.tabId === tab.id}
                 />
 
-                {/* Separator with hover add button */}
                 {showDots && (
                   <div
                     className="relative flex items-center transition-all duration-300 ease-in-out"
                     onMouseEnter={() => setHoveredSeparator(index)}
                     onMouseLeave={() => setHoveredSeparator(null)}
                   >
-                    {/* Left dashed line */}
                     <div
                       className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
                         hoveredSeparator === index && onAddPageAtIndex
@@ -330,7 +331,6 @@ export default function TabNavigation({
                       }`}
                     ></div>
 
-                    {/* Hover add button with smooth animation */}
                     <div
                       className={`transition-all duration-300 ease-in-out ${
                         hoveredSeparator === index && onAddPageAtIndex
@@ -348,7 +348,6 @@ export default function TabNavigation({
                       )}
                     </div>
 
-                    {/* Right dashed line */}
                     <div
                       className={`h-[1.50px] relative border border-stone-300 border-dashed transition-all duration-300 ease-in-out ${
                         hoveredSeparator === index && onAddPageAtIndex
@@ -382,7 +381,6 @@ export default function TabNavigation({
           </>
         )}
 
-        {/* Context Menu */}
         <TabContextMenu
           isOpen={!!contextMenu}
           position={
@@ -395,7 +393,6 @@ export default function TabNavigation({
         />
       </div>
 
-      {/* Drag Overlay */}
       <DragOverlay>
         {activeDragTab ? (
           <DragOverlayTab tab={activeDragTab} getIcon={getIcon} />
