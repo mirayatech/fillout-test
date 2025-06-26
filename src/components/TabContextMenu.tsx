@@ -73,17 +73,15 @@ export default function TabContextMenu({
 
   return (
     <div
-      className="fixed z-50 w-[240px] bg-white rounded-xl shadow-[0px_1px_3px_rgba(0,0,0,0.04)] border-[0.5px] border-[#E1E1E1] overflow-hidden flex flex-col"
+      className="fixed z-50 w-240 bg-white rounded-xl shadow-menu border-0.5 border-gray-200 outline outline-0.5 outline-gray-200 outline-offset--0.5 overflow-hidden flex flex-col"
       style={{
         left: position.x,
         top: position.y,
-        outline: "0.50px #E1E1E1 solid",
-        outlineOffset: "-0.50px",
       }}
       onClick={(event) => event.stopPropagation()}
     >
-      <div className="h-10 bg-[#FAFBFC] border-b-[0.5px] border-[#E1E1E1] flex items-center px-3">
-        <div className="text-[#1A1A1A] text-base font-medium leading-6">
+      <div className="h-10 bg-gray-50 border-b-0.5 border-gray-200 flex items-center px-3">
+        <div className="text-gray-900 text-base font-medium leading-6">
           Settings
         </div>
       </div>
@@ -100,9 +98,9 @@ export default function TabContextMenu({
           }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Flag className="w-4 h-4 text-[#2F72E2]" />
+            <Flag className="w-4 h-4 text-primary-500" />
           </div>
-          <div className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4">
+          <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
             Set as first page
           </div>
         </button>
@@ -114,9 +112,9 @@ export default function TabContextMenu({
           }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Edit2 className="w-4 h-4 text-[#9DA4B2]" />
+            <Edit2 className="w-4 h-4 text-gray-400" />
           </div>
-          <div className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4">
+          <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
             Rename
           </div>
         </button>
@@ -128,9 +126,9 @@ export default function TabContextMenu({
           }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Copy className="w-4 h-4 text-[#9DA4B2]" />
+            <Copy className="w-4 h-4 text-gray-400" />
           </div>
-          <div className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4">
+          <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
             Copy
           </div>
         </button>
@@ -144,14 +142,14 @@ export default function TabContextMenu({
           }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Files className="w-4 h-4 text-[#9DA4B2]" />
+            <Files className="w-4 h-4 text-gray-400" />
           </div>
-          <div className="flex-1 text-[#1A1A1A] text-sm font-medium leading-4">
+          <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
             Duplicate
           </div>
         </button>
 
-        <div className="h-[0.5px] bg-[#E1E1E1]"></div>
+        <div className="h-0.5 bg-gray-200"></div>
 
         <button
           className="w-full flex items-center gap-[6px] text-left group hover:bg-red-50 rounded p-1 -m-1"
@@ -160,9 +158,9 @@ export default function TabContextMenu({
           }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Trash2 className="w-4 h-4 text-[#EF494F]" />
+            <Trash2 className="w-4 h-4 text-danger" />
           </div>
-          <div className="flex-1 text-[#EF494F] text-sm font-medium leading-4">
+          <div className="flex-1 text-danger text-sm font-medium leading-4">
             Delete
           </div>
         </button>
