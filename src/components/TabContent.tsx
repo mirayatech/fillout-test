@@ -7,7 +7,7 @@ interface TabContentProps {
 
 export const TabContent = ({ activeTab, activeTabId }: TabContentProps) => {
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
+    <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
       <h2 className="text-lg font-semibold mb-2">Active Tab Content</h2>
       <p className="text-gray-600">
         Current active tab:{" "}
