@@ -1,5 +1,5 @@
-import React from "react";
 import { Flag, Edit2, Copy, Files, Trash2 } from "lucide-react";
+import { useTabStore } from "../store/tabStore";
 
 interface TabContextMenuProps {
   isOpen: boolean;
@@ -24,11 +24,51 @@ export default function TabContextMenu({
   onDuplicate,
   onDelete,
 }: TabContextMenuProps) {
+  const { removeTab, duplicateTab, updateTab, tabs, reorderTabs } =
+    useTabStore();
+
   if (!isOpen) return null;
 
   const handleMenuAction = (action: () => void) => {
     action();
     onClose();
+  };
+
+  const handleSetAsFirstPage = () => {
+    const currentTabs = [...tabs];
+    const tabIndex = currentTabs.findIndex((tab) => tab.id === tabId);
+    if (tabIndex > 0) {
+      const [tab] = currentTabs.splice(tabIndex, 1);
+      currentTabs.unshift(tab);
+      reorderTabs(currentTabs);
+    }
+  };
+
+  const handleRename = () => {
+    const newName = prompt("Enter new tab name:");
+    if (newName && newName.trim()) {
+      updateTab(tabId, { label: newName.trim() });
+    }
+  };
+
+  const handleCopy = () => {
+    const tab = tabs.find((t) => t.id === tabId);
+    if (tab) {
+      navigator.clipboard.writeText(JSON.stringify(tab));
+      console.log("Tab copied to clipboard:", tab);
+    }
+  };
+
+  const handleDuplicate = () => {
+    duplicateTab(tabId);
+  };
+
+  const handleDelete = () => {
+    if (tabs.length > 1) {
+      removeTab(tabId);
+    } else {
+      alert("Cannot delete the last tab");
+    }
   };
 
   return (
@@ -42,7 +82,6 @@ export default function TabContextMenu({
       }}
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Header */}
       <div className="h-10 bg-[#FAFBFC] border-b-[0.5px] border-[#E1E1E1] flex items-center px-3">
         <div
           className="text-[#1A1A1A] text-base font-medium leading-6"
@@ -52,12 +91,15 @@ export default function TabContextMenu({
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-3 pb-[14px] flex flex-col gap-[14px]">
         <button
           className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1"
           onClick={() =>
-            onSetAsFirstPage && handleMenuAction(() => onSetAsFirstPage(tabId))
+            handleMenuAction(
+              onSetAsFirstPage
+                ? () => onSetAsFirstPage(tabId)
+                : handleSetAsFirstPage
+            )
           }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
@@ -73,7 +115,9 @@ export default function TabContextMenu({
 
         <button
           className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1"
-          onClick={() => onRename && handleMenuAction(() => onRename(tabId))}
+          onClick={() =>
+            handleMenuAction(onRename ? () => onRename(tabId) : handleRename)
+          }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
             <Edit2 className="w-4 h-4 text-[#9DA4B2]" />
@@ -88,7 +132,9 @@ export default function TabContextMenu({
 
         <button
           className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1"
-          onClick={() => onCopy && handleMenuAction(() => onCopy(tabId))}
+          onClick={() =>
+            handleMenuAction(onCopy ? () => onCopy(tabId) : handleCopy)
+          }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
             <Copy className="w-4 h-4 text-[#9DA4B2]" />
@@ -104,7 +150,9 @@ export default function TabContextMenu({
         <button
           className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1"
           onClick={() =>
-            onDuplicate && handleMenuAction(() => onDuplicate(tabId))
+            handleMenuAction(
+              onDuplicate ? () => onDuplicate(tabId) : handleDuplicate
+            )
           }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
@@ -118,12 +166,13 @@ export default function TabContextMenu({
           </div>
         </button>
 
-        {/* Separator */}
         <div className="h-[0.5px] bg-[#E1E1E1]"></div>
 
         <button
           className="w-full flex items-center gap-[6px] text-left group hover:bg-red-50 rounded p-1 -m-1"
-          onClick={() => onDelete && handleMenuAction(() => onDelete(tabId))}
+          onClick={() =>
+            handleMenuAction(onDelete ? () => onDelete(tabId) : handleDelete)
+          }
         >
           <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
             <Trash2 className="w-4 h-4 text-[#EF494F]" />
