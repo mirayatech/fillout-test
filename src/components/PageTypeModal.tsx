@@ -1,12 +1,12 @@
 import {
   FormInput,
   BookOpen,
-  Heart,
   Eye,
   CreditCard,
   Lock,
   Calendar,
   X,
+  CheckCircle2,
 } from "lucide-react";
 import { cn } from "../utils/cn";
 
@@ -35,7 +35,7 @@ const PAGE_TYPES: PageType[] = [
     id: "ending",
     name: "Ending",
     description: "Show a thank you page or redirect users",
-    icon: Heart,
+    icon: CheckCircle2,
   },
   {
     id: "review",
@@ -81,18 +81,15 @@ export default function PageTypeModal({
 
   return (
     <>
-      {/* Backdrop */}
       <div className="fixed inset-0 z-40" onClick={onClose} />
 
-      {/* Dropdown */}
       <div
         className="fixed z-50 bg-white rounded-lg shadow-xl w-80 max-h-96 overflow-hidden border border-gray-200"
         style={{
           left: position.x,
-          top: position.y + 8, // 8px gap below button
+          top: position.y + 8,
         }}
       >
-        {/* Header */}
         <div className="flex items-center justify-between p-3 border-b bg-gray-50">
           <h2 className="text-lg font-semibold text-gray-900">
             Choose a page type
@@ -130,7 +127,7 @@ export default function PageTypeModal({
                     pageType.id === "scheduling" && "bg-gray-100 text-gray-600"
                   )}
                 >
-                  <IconComponent size={16} />
+                  <IconComponent className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
