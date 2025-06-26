@@ -1,7 +1,13 @@
 import { useState } from "react";
-import { X } from "lucide-react";
 import { cn } from "../utils/cn";
 import type { PageType } from "./PageTypeModal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "./ui/dialog";
 
 interface PageNameModalProps {
   isOpen: boolean;
@@ -18,8 +24,6 @@ export default function PageNameModal({
 }: PageNameModalProps) {
   const [pageName, setPageName] = useState("");
 
-  if (!isOpen || !pageType) return null;
-
   const handleContinue = () => {
     if (pageName.trim()) {
       onContinue(pageName.trim());
@@ -32,16 +36,24 @@ export default function PageNameModal({
     onClose();
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      handleCancel();
+    }
+  };
+
+  if (!pageType) return null;
+
   const IconComponent = pageType.icon;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-        <div className="flex items-center justify-between p-4 border-b">
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="bg-white rounded-lg shadow-modal max-w-md w-full mx-4 p-0">
+        <DialogHeader className="flex items-center justify-between p-4 border-b space-y-0">
           <div className="flex items-center gap-3">
             <div
               className={cn(
-                "w-8 h-8 rounded-lg flex items-center justify-center",
+                "size-8 rounded-lg flex items-center justify-center",
                 pageType.id === "form" && "bg-orange-100 text-orange-600",
                 pageType.id === "cover" && "bg-blue-100 text-blue-600",
                 pageType.id === "ending" && "bg-red-100 text-red-600",
@@ -51,19 +63,13 @@ export default function PageNameModal({
                 pageType.id === "scheduling" && "bg-gray-100 text-gray-600"
               )}
             >
-              <IconComponent className="w-4 h-4" />
+              <IconComponent className="size-4" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">
+            <DialogTitle className="text-lg font-semibold text-gray-900">
               Name your {pageType.name.toLowerCase()} page
-            </h2>
+            </DialogTitle>
           </div>
-          <button
-            onClick={handleCancel}
-            className="p-1 hover:bg-gray-100 rounded-md transition-colors"
-          >
-            <X size={20} className="text-gray-500" />
-          </button>
-        </div>
+        </DialogHeader>
 
         <div className="p-6 space-y-4">
           <div>
@@ -79,7 +85,7 @@ export default function PageNameModal({
               value={pageName}
               onChange={(e) => setPageName(e.target.value)}
               placeholder={`Enter ${pageType.name.toLowerCase()} page name`}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-900 transition-colors"
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === "Enter" && pageName.trim()) {
@@ -93,10 +99,10 @@ export default function PageNameModal({
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 p-6 pt-0">
+        <DialogFooter className="flex justify-end gap-px p-6 pt-0">
           <button
             onClick={handleCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+            className="h-10 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:border-gray-900 transition-colors"
           >
             Cancel
           </button>
@@ -104,16 +110,16 @@ export default function PageNameModal({
             onClick={handleContinue}
             disabled={!pageName.trim()}
             className={cn(
-              "px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors",
+              "h-10 px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors",
               pageName.trim()
-                ? "bg-blue-600 hover:bg-blue-700"
+                ? "bg-zinc-900 hover:bg-zinc-800"
                 : "bg-gray-300 cursor-not-allowed"
             )}
           >
             Continue
           </button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

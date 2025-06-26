@@ -1,11 +1,17 @@
 import { Flag, Edit2, Copy, Files, Trash2 } from "lucide-react";
 import { useTabStore } from "../store/tabStore";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 interface TabContextMenuProps {
-  isOpen: boolean;
-  position: { x: number; y: number };
+  trigger: React.ReactNode;
   tabId: string;
-  onClose: () => void;
   onSetAsFirstPage?: (tabId: string) => void;
   onRename?: (tabId: string) => void;
   onCopy?: (tabId: string) => void;
@@ -14,10 +20,8 @@ interface TabContextMenuProps {
 }
 
 export default function TabContextMenu({
-  isOpen,
-  position,
+  trigger,
   tabId,
-  onClose,
   onSetAsFirstPage,
   onRename,
   onCopy,
@@ -26,13 +30,6 @@ export default function TabContextMenu({
 }: TabContextMenuProps) {
   const { removeTab, duplicateTab, updateTab, tabs, reorderTabs } =
     useTabStore();
-
-  if (!isOpen) return null;
-
-  const handleMenuAction = (action: () => void) => {
-    action();
-    onClose();
-  };
 
   const handleSetAsFirstPage = () => {
     const currentTabs = [...tabs];
@@ -72,99 +69,89 @@ export default function TabContextMenu({
   };
 
   return (
-    <div
-      className="fixed z-50 w-240 bg-white rounded-xl shadow-menu border-0.5 border-gray-200 outline outline-0.5 outline-gray-200 outline-offset--0.5 overflow-hidden flex flex-col"
-      style={{
-        left: position.x,
-        top: position.y,
-      }}
-      onClick={(event) => event.stopPropagation()}
-    >
-      <div className="h-10 bg-gray-50 border-b-0.5 border-gray-200 flex items-center px-3">
-        <div className="text-gray-900 text-base font-medium leading-6">
-          Settings
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="w-240 mt-3 bg-white rounded-xl shadow-menu border-0.5 border-gray-200 outline outline-0.5 outline-gray-200 outline-offset--0.5 overflow-hidden p-0"
+        align="end"
+        alignOffset={-130}
+      >
+        <div className="h-10 bg-gray-50 border-b-0.5 border-gray-200 flex items-center px-3">
+          <DropdownMenuLabel className="text-gray-900 text-base font-medium leading-6 p-0">
+            Settings
+          </DropdownMenuLabel>
         </div>
-      </div>
 
-      <div className="p-3 pb-[14px] flex flex-col gap-[14px]">
-        <button
-          className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1"
-          onClick={() =>
-            handleMenuAction(
+        <div className="p-3 pb-[14px] flex flex-col gap-[14px]">
+          <DropdownMenuItem
+            className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1 cursor-pointer"
+            onClick={() =>
               onSetAsFirstPage
-                ? () => onSetAsFirstPage(tabId)
-                : handleSetAsFirstPage
-            )
-          }
-        >
-          <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Flag className="w-4 h-4 text-primary-500" />
-          </div>
-          <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
-            Set as first page
-          </div>
-        </button>
+                ? onSetAsFirstPage(tabId)
+                : handleSetAsFirstPage()
+            }
+          >
+            <div className="size-4 relative overflow-hidden flex items-center justify-center">
+              <Flag className="size-4 text-primary-500 fill-primary-500" />
+            </div>
+            <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
+              Set as first page
+            </div>
+          </DropdownMenuItem>
 
-        <button
-          className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1"
-          onClick={() =>
-            handleMenuAction(onRename ? () => onRename(tabId) : handleRename)
-          }
-        >
-          <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Edit2 className="w-4 h-4 text-gray-400" />
-          </div>
-          <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
-            Rename
-          </div>
-        </button>
+          <DropdownMenuItem
+            className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1 cursor-pointer"
+            onClick={() => (onRename ? onRename(tabId) : handleRename())}
+          >
+            <div className="size-4 relative overflow-hidden flex items-center justify-center">
+              <Edit2 className="size-4 text-gray-400" />
+            </div>
+            <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
+              Rename
+            </div>
+          </DropdownMenuItem>
 
-        <button
-          className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1"
-          onClick={() =>
-            handleMenuAction(onCopy ? () => onCopy(tabId) : handleCopy)
-          }
-        >
-          <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Copy className="w-4 h-4 text-gray-400" />
-          </div>
-          <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
-            Copy
-          </div>
-        </button>
+          <DropdownMenuItem
+            className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1 cursor-pointer"
+            onClick={() => (onCopy ? onCopy(tabId) : handleCopy())}
+          >
+            <div className="size-4 relative overflow-hidden flex items-center justify-center">
+              <Copy className="size-4 text-gray-400" />
+            </div>
+            <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
+              Copy
+            </div>
+          </DropdownMenuItem>
 
-        <button
-          className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1"
-          onClick={() =>
-            handleMenuAction(
-              onDuplicate ? () => onDuplicate(tabId) : handleDuplicate
-            )
-          }
-        >
-          <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Files className="w-4 h-4 text-gray-400" />
-          </div>
-          <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
-            Duplicate
-          </div>
-        </button>
+          <DropdownMenuItem
+            className="w-full flex items-center gap-[6px] text-left group hover:bg-gray-50 rounded p-1 -m-1 cursor-pointer"
+            onClick={() =>
+              onDuplicate ? onDuplicate(tabId) : handleDuplicate()
+            }
+          >
+            <div className="size-4 relative overflow-hidden flex items-center justify-center">
+              <Files className="size-4 text-gray-400" />
+            </div>
+            <div className="flex-1 text-gray-900 text-sm font-medium leading-4">
+              Duplicate
+            </div>
+          </DropdownMenuItem>
 
-        <div className="h-0.5 bg-gray-200"></div>
+          <DropdownMenuSeparator className="h-0.5 bg-gray-200 mx-0" />
 
-        <button
-          className="w-full flex items-center gap-[6px] text-left group hover:bg-red-50 rounded p-1 -m-1"
-          onClick={() =>
-            handleMenuAction(onDelete ? () => onDelete(tabId) : handleDelete)
-          }
-        >
-          <div className="w-4 h-4 relative overflow-hidden flex items-center justify-center">
-            <Trash2 className="w-4 h-4 text-danger" />
-          </div>
-          <div className="flex-1 text-danger text-sm font-medium leading-4">
-            Delete
-          </div>
-        </button>
-      </div>
-    </div>
+          <DropdownMenuItem
+            className="w-full flex items-center gap-[6px] text-left group hover:bg-red-50 rounded p-1 -m-1 cursor-pointer"
+            onClick={() => (onDelete ? onDelete(tabId) : handleDelete())}
+          >
+            <div className="size-4 relative overflow-hidden flex items-center justify-center">
+              <Trash2 className="size-4 text-danger" />
+            </div>
+            <div className="flex-1 text-danger text-sm font-medium leading-4">
+              Delete
+            </div>
+          </DropdownMenuItem>
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

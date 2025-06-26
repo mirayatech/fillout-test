@@ -47,9 +47,7 @@ function SortableTabItem({
   onTabClick,
   onMouseEnter,
   onMouseLeave,
-  onEllipsisClick,
   getIcon,
-  isContextMenuOpen,
 }: {
   tab: Tab;
   isActive: boolean;
@@ -57,9 +55,7 @@ function SortableTabItem({
   onTabClick: (tabId: string) => void;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
-  onEllipsisClick: (e: React.MouseEvent, tabId: string) => void;
   getIcon: (tab: Tab, isActive: boolean) => React.ReactNode;
-  isContextMenuOpen: boolean;
 }) {
   const {
     attributes,
@@ -118,14 +114,17 @@ function SortableTabItem({
       <div
         className={cn(
           "overflow-hidden transition-all duration-300 ease-out text-gray-400",
-          isActive && (isHovered || isContextMenuOpen)
-            ? "w-3 opacity-100"
-            : "w-0 ml-0 opacity-0"
+          isActive && isHovered ? "w-3 opacity-100" : "w-0 ml-0 opacity-0"
         )}
       >
-        <EllipsisVertical
-          className="size-4 hover:text-gray-900 cursor-pointer"
-          onClick={(e) => onEllipsisClick(e, tab.id)}
+        <TabContextMenu
+          tabId={tab.id}
+          trigger={
+            <EllipsisVertical
+              className="size-4 hover:text-gray-900 cursor-pointer"
+              onClick={(e) => e.stopPropagation()}
+            />
+          }
         />
       </div>
     </button>
@@ -169,11 +168,6 @@ export default function TabNavigation({
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [hoveredSeparator, setHoveredSeparator] = useState<number | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [contextMenu, setContextMenu] = useState<{
-    tabId: string;
-    x: number;
-    y: number;
-  } | null>(null);
   const [showPageTypeModal, setShowPageTypeModal] = useState(false);
   const [showPageNameModal, setShowPageNameModal] = useState(false);
   const [selectedPageType, setSelectedPageType] = useState<PageType | null>(
@@ -183,7 +177,6 @@ export default function TabNavigation({
   const [activeSeparatorIndex, setActiveSeparatorIndex] = useState<
     number | null
   >(null);
-  const [addButtonPosition, setAddButtonPosition] = useState({ x: 0, y: 0 });
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -254,13 +247,6 @@ export default function TabNavigation({
   };
 
   const handleAddPageClick = (event?: React.MouseEvent<HTMLButtonElement>) => {
-    if (event && addButtonRef.current) {
-      const rect = addButtonRef.current.getBoundingClientRect();
-      setAddButtonPosition({
-        x: rect.left,
-        y: rect.bottom,
-      });
-    }
     setAddPageIndex(null);
     setShowPageTypeModal(true);
   };
@@ -269,30 +255,9 @@ export default function TabNavigation({
     index: number,
     event?: React.MouseEvent<HTMLButtonElement>
   ) => {
-    if (event && event.currentTarget) {
-      const rect = event.currentTarget.getBoundingClientRect();
-      setAddButtonPosition({
-        x: rect.left,
-        y: rect.bottom,
-      });
-    }
     setAddPageIndex(index);
     setActiveSeparatorIndex(Math.floor(index - 1));
     setShowPageTypeModal(true);
-  };
-
-  const handleEllipsisClick = (e: React.MouseEvent, tabId: string) => {
-    e.stopPropagation();
-    const rect = e.currentTarget.getBoundingClientRect();
-    setContextMenu({
-      tabId,
-      x: rect.left,
-      y: rect.bottom + 4,
-    });
-  };
-
-  const closeContextMenu = () => {
-    setContextMenu(null);
   };
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -313,14 +278,6 @@ export default function TabNavigation({
 
     setActiveId(null);
   };
-
-  React.useEffect(() => {
-    const handleClickOutside = () => closeContextMenu();
-    if (contextMenu) {
-      document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
-    }
-  }, [contextMenu]);
 
   const getIcon = (tab: Tab, isActive: boolean) => {
     switch (tab.type) {
@@ -524,9 +481,7 @@ export default function TabNavigation({
                     onTabClick={handleTabClick}
                     onMouseEnter={() => setHoveredTab(tab.id)}
                     onMouseLeave={() => setHoveredTab(null)}
-                    onEllipsisClick={handleEllipsisClick}
                     getIcon={getIcon}
-                    isContextMenuOpen={contextMenu?.tabId === tab.id}
                   />
 
                   {showDots && (
@@ -559,14 +514,27 @@ export default function TabNavigation({
                         {(hoveredSeparator === index ||
                           activeSeparatorIndex === index) &&
                           onAddPageAtIndex && (
-                            <button
-                              onClick={(e) =>
-                                handleInlineAddClick(index + 1, e)
+                            <PageTypeModal
+                              isOpen={
+                                showPageTypeModal && addPageIndex === index + 1
                               }
-                              className="size-5 bg-white p-1 rounded-full shadow-button outline outline-0.5 outline-offset--0.5 outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 "
-                            >
-                              <PlusIcon className="size-3 text-black transition-transform duration-200 ease-out group-hover:scale-110 group-hover:rotate-90" />
-                            </button>
+                              onClose={() => {
+                                setShowPageTypeModal(false);
+                                setActiveSeparatorIndex(null);
+                                setAddPageIndex(null);
+                              }}
+                              onSelectPageType={handlePageTypeSelect}
+                              trigger={
+                                <button
+                                  onClick={(e) =>
+                                    handleInlineAddClick(index + 1, e)
+                                  }
+                                  className="size-5 bg-white p-1 rounded-full shadow-button outline outline-0.5 outline-offset--0.5 outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 "
+                                >
+                                  <PlusIcon className="size-3 text-black transition-transform duration-200 ease-out group-hover:scale-110 group-hover:rotate-90" />
+                                </button>
+                              }
+                            />
                           )}
                       </div>
 
@@ -590,43 +558,35 @@ export default function TabNavigation({
           {showAddButton && (
             <>
               <div className="w-5 h-[1.50px] relative border border-stone-300 border-dashed flex-shrink-0"></div>
-              <button
-                ref={addButtonRef}
-                onClick={handleAddPageClick}
-                className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-button border-gray-200 border flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none group flex-shrink-0"
-              >
-                <div className="size-4 flex items-center justify-center relative transition-transform duration-300 ease-out ">
-                  <PlusIcon className="size-4 text-zinc-900" />
-                </div>
-                <div className="relative overflow-hidden">
-                  <span className="text-center justify-start text-zinc-900 text-sm font-medium font-inter leading-tight transition-colors duration-300 ease-out">
-                    {addButtonLabel}
-                  </span>
-                </div>
-              </button>
+              <PageTypeModal
+                isOpen={showPageTypeModal && addPageIndex === null}
+                onClose={() => {
+                  setShowPageTypeModal(false);
+                  setActiveSeparatorIndex(null);
+                  setAddPageIndex(null);
+                }}
+                onSelectPageType={handlePageTypeSelect}
+                trigger={
+                  <button
+                    ref={addButtonRef}
+                    onClick={handleAddPageClick}
+                    className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-button border-gray-200 border flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none group flex-shrink-0"
+                  >
+                    <div className="size-4 flex items-center justify-center relative transition-transform duration-300 ease-out ">
+                      <PlusIcon className="size-4 text-zinc-900" />
+                    </div>
+                    <div className="relative overflow-hidden">
+                      <span className="text-center justify-start text-zinc-900 text-sm font-medium font-inter leading-tight transition-colors duration-300 ease-out">
+                        {addButtonLabel}
+                      </span>
+                    </div>
+                  </button>
+                }
+              />
             </>
           )}
         </div>
-        <TabContextMenu
-          isOpen={!!contextMenu}
-          position={
-            contextMenu
-              ? { x: contextMenu.x, y: contextMenu.y }
-              : { x: 0, y: 0 }
-          }
-          tabId={contextMenu?.tabId || ""}
-          onClose={closeContextMenu}
-        />
-        <PageTypeModal
-          isOpen={showPageTypeModal}
-          onClose={() => {
-            setShowPageTypeModal(false);
-            setActiveSeparatorIndex(null);
-            setAddPageIndex(null);
-          }}
-          onSelectPageType={handlePageTypeSelect}
-          position={addButtonPosition}
-        />
+
         <PageNameModal
           isOpen={showPageNameModal}
           onClose={handlePageNameCancel}
