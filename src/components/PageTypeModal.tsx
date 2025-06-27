@@ -106,7 +106,7 @@ export default function PageTypeModal({
               <DropdownMenuItem
                 key={pageType.id}
                 onClick={() => handleSelect(pageType)}
-                className="w-full flex items-center gap-[6px] p-1 -m-1 rounded text-left transition-all duration-200 ease-in-out hover:bg-gray-25 hover:shadow-sm focus:outline-none cursor-pointer"
+                className="w-full flex items-center gap-[6px] p-1 -m-1 rounded text-left transition-all duration-200 ease-in-out hover:bg-gray-25 hover:shadow-sm focus:outline-none focus:bg-gray-100 focus:ring-1 focus:ring-gray-300 cursor-pointer"
               >
                 <div
                   className={cn(
