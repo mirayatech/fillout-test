@@ -50,7 +50,7 @@ export const useScrollControls = ({
     const handleResize = () => checkScrollButtons();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [...dependencies, checkScrollButtons]);
+  }, [checkScrollButtons, dependencies]);
 
   // add scroll event listener
   useEffect(() => {
@@ -59,7 +59,7 @@ export const useScrollControls = ({
 
     container.addEventListener("scroll", checkScrollButtons);
     return () => container.removeEventListener("scroll", checkScrollButtons);
-  }, [checkScrollButtons]);
+  }, [checkScrollButtons, containerRef]);
 
   return {
     canScrollLeft,
