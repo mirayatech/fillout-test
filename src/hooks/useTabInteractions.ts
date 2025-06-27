@@ -57,6 +57,13 @@ export const useTabInteractions = (): UseTabInteractionsReturn => {
     setShowPageNameModal(true);
   }, []);
 
+  const handlePageNameCancel = useCallback(() => {
+    setShowPageNameModal(false);
+    setSelectedPageType(null);
+    setAddPageIndex(null);
+    setActiveSeparatorIndex(null);
+  }, []);
+
   const handlePageNameContinue = useCallback(
     (
       name: string,
@@ -76,15 +83,8 @@ export const useTabInteractions = (): UseTabInteractionsReturn => {
       }
       handlePageNameCancel();
     },
-    [selectedPageType, addPageIndex]
+    [selectedPageType, addPageIndex, handlePageNameCancel]
   );
-
-  const handlePageNameCancel = useCallback(() => {
-    setShowPageNameModal(false);
-    setSelectedPageType(null);
-    setAddPageIndex(null);
-    setActiveSeparatorIndex(null);
-  }, []);
 
   const handleModalClose = useCallback(() => {
     setShowPageTypeModal(false);
