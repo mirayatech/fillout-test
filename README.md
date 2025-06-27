@@ -75,4 +75,12 @@ The whole thing uses Zustand for state management which keeps things simple, and
 **Current Behavior**: 
 - Regardless of where you click the "+", new pages always get added at the very end after all existing pages
 
+## 🎥 Demo
+
+https://github.com/user-attachments/assets/00b88947-e898-48e0-8f7b-c80de191b650
+
+
+
+
+
 **Impact**: Makes it frustrating to build forms with pages in a specific order, as users have to drag pages around after creation instead of placing them correctly from the start.
