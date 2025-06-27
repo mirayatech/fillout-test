@@ -12,7 +12,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { cn } from "../utils/cn";
@@ -93,7 +92,7 @@ export default function PageTypeModal({
     <DropdownMenu open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-80 max-h-96"
+        className="w-screen max-w-sm max-h-96 rounded-xl"
         align="start"
         sideOffset={8}
       >
@@ -107,7 +106,7 @@ export default function PageTypeModal({
               <DropdownMenuItem
                 key={pageType.id}
                 onClick={() => handleSelect(pageType)}
-                className="w-full flex items-center gap-[6px] p-1 -m-1 rounded text-left transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                className="w-full flex items-center gap-[6px] p-1 -m-1 rounded text-left transition-all duration-200 ease-in-out hover:bg-gray-25 hover:shadow-sm focus:outline-none cursor-pointer"
               >
                 <div
                   className={cn(
