@@ -17,6 +17,7 @@ interface TabContextMenuProps {
   onCopy?: (tabId: string) => void;
   onDuplicate?: (tabId: string) => void;
   onDelete?: (tabId: string) => void;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export default function TabContextMenu({
@@ -27,6 +28,7 @@ export default function TabContextMenu({
   onCopy,
   onDuplicate,
   onDelete,
+  onOpenChange,
 }: TabContextMenuProps) {
   const { removeTab, duplicateTab, updateTab, tabs, reorderTabs } =
     useTabStore();
@@ -68,7 +70,7 @@ export default function TabContextMenu({
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent
         className="w-240 mt-3 bg-white rounded-xl shadow-menu border-0.5 border-gray-200 outline outline-0.5 outline-gray-200 outline-offset--0.5 overflow-hidden p-0"

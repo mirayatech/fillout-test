@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { EllipsisVertical, GripVertical } from "lucide-react";
@@ -18,6 +18,7 @@ interface SortableTabItemProps {
 
 export const SortableTabItem = memo<SortableTabItemProps>(
   ({ tab, isActive, isHovered, onTabClick, onMouseEnter, onMouseLeave }) => {
+    const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
     const {
       attributes,
       listeners,
@@ -86,11 +87,14 @@ export const SortableTabItem = memo<SortableTabItemProps>(
         <div
           className={cn(
             "overflow-hidden transition-all duration-300 ease-out text-gray-400",
-            isActive && isHovered ? "w-3 opacity-100" : "w-0 ml-0 opacity-0"
+            isActive && (isHovered || isContextMenuOpen)
+              ? "w-3 opacity-100"
+              : "w-0 ml-0 opacity-0"
           )}
         >
           <TabContextMenu
             tabId={tab.id}
+            onOpenChange={setIsContextMenuOpen}
             trigger={
               <EllipsisVertical
                 className="size-4 hover:text-gray-900 cursor-pointer"
