@@ -76,5 +76,3 @@ The whole thing uses Zustand for state management which keeps things simple, and
 - Regardless of where you click the "+", new pages always get added at the very end after all existing pages
 
 **Impact**: Makes it frustrating to build forms with pages in a specific order, as users have to drag pages around after creation instead of placing them correctly from the start.
-
-**Status**: ✅ **FIXED** - The issue was that the TabSeparator component was checking for the wrong callback prop (`onAddPageAtIndex` instead of `onAddPageAtIndexWithType`), which prevented the "+" buttons from being enabled properly.
