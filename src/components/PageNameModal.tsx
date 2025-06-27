@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { cn } from "../utils/cn";
 import type { PageType } from "./PageTypeModal";
+import { PageTypeIcon } from "./ui/tab-icon";
 import {
   Dialog,
   DialogContent,
@@ -44,27 +45,12 @@ export default function PageNameModal({
 
   if (!pageType) return null;
 
-  const IconComponent = pageType.icon;
-
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="bg-white rounded-lg shadow-modal max-w-md w-full mx-4 p-0">
         <DialogHeader className="flex items-center justify-between p-4 border-b space-y-0">
           <div className="flex items-center gap-3">
-            <div
-              className={cn(
-                "size-8 rounded-lg flex items-center justify-center",
-                pageType.id === "form" && "bg-orange-100 text-orange-600",
-                pageType.id === "cover" && "bg-blue-100 text-blue-600",
-                pageType.id === "ending" && "bg-red-100 text-red-600",
-                pageType.id === "review" && "bg-purple-100 text-purple-600",
-                pageType.id === "payment" && "bg-pink-100 text-pink-600",
-                pageType.id === "login" && "bg-green-100 text-green-600",
-                pageType.id === "scheduling" && "bg-gray-100 text-gray-600"
-              )}
-            >
-              <IconComponent className="size-4" />
-            </div>
+            <PageTypeIcon pageTypeId={pageType.id} size="md" />
             <DialogTitle className="text-lg font-semibold text-gray-900">
               Name your {pageType.name.toLowerCase()} page
             </DialogTitle>
@@ -83,15 +69,15 @@ export default function PageNameModal({
               id="pageName"
               type="text"
               value={pageName}
-              onChange={(e) => setPageName(e.target.value)}
+              onChange={(event) => setPageName(event.target.value)}
               placeholder={`Enter ${pageType.name.toLowerCase()} page name`}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-900 transition-colors"
               autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && pageName.trim()) {
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && pageName.trim()) {
                   handleContinue();
                 }
-                if (e.key === "Escape") {
+                if (event.key === "Escape") {
                   handleCancel();
                 }
               }}
