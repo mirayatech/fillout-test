@@ -16,15 +16,10 @@ export default function App() {
 
   const handleTabChange = (tabId: string) => {
     setActiveTabId(tabId);
-    console.log("Tab changed to:", tabId);
   };
 
   const handleTabsReorder = (newTabs: Tab[]) => {
     reorderTabs(newTabs);
-    console.log(
-      "Tabs reordered:",
-      newTabs.map((tab) => tab.label)
-    );
   };
 
   return (

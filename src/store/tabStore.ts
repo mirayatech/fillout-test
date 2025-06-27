@@ -63,14 +63,12 @@ export const useTabStore = create<TabState>()(
       },
 
       addTabWithType: (pageType, name) => {
-        console.log("Adding tab with type:", pageType, "name:", name);
         const { tabs } = get();
         const newTab = createNewTab({
           id: generateTabId(pageType.id),
           label: name,
           type: (pageType.id as Tab["type"]) || "document",
         });
-        console.log("Created new tab:", newTab);
         const newTabs = [...tabs, newTab];
         set({ tabs: newTabs });
       },

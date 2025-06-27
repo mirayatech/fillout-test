@@ -52,7 +52,6 @@ export default function TabContextMenu({
     const tab = tabs.find((tab) => tab.id === tabId);
     if (tab) {
       navigator.clipboard.writeText(JSON.stringify(tab));
-      console.log("Tab copied to clipboard:", tab);
     }
   };
 
