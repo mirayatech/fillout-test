@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, type RefObject } from "react";
 
 interface UseScrollControlsProps {
-  containerRef: RefObject<HTMLDivElement>;
+  containerRef: RefObject<HTMLDivElement | null>;
   dependencies?: unknown[];
 }
 
