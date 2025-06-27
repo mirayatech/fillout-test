@@ -137,7 +137,7 @@ export const PAGE_TYPE_CONFIGS: Record<string, PageTypeConfig> = {
     backgroundColor: "bg-amber-100 text-amber-500",
   },
 } as const;
-// Export array for use in dropdowns and lists
+
 export const PAGE_TYPES = Object.values(PAGE_TYPE_CONFIGS).filter(
   (config) =>
     config.id !== "info" &&
