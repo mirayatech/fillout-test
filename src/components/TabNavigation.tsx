@@ -88,7 +88,7 @@ function SortableTabItem({
           : "bg-gray-400/15 hover:bg-gray-400/35",
         tab.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
         sortableIsDragging ? "cursor-grabbing" : "cursor-grab",
-        "focus-visible:outline focus-visible:outline-0.5 focus-visible:outline-primary-500 focus-visible:outline-offset--0.5 focus-visible:shadow-focus transform-gpu"
+        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#2F72E2] focus-visible:ring-offset-0 focus-visible:shadow-[0_0_0_4px_rgba(47,114,226,0.1)] transform-gpu"
       )}
       {...attributes}
       {...listeners}
@@ -246,15 +246,12 @@ export default function TabNavigation({
     onTabChange?.(tabId);
   };
 
-  const handleAddPageClick = (event?: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddPageClick = () => {
     setAddPageIndex(null);
     setShowPageTypeModal(true);
   };
 
-  const handleInlineAddClick = (
-    index: number,
-    event?: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleInlineAddClick = (index: number) => {
     setAddPageIndex(index);
     setActiveSeparatorIndex(Math.floor(index - 1));
     setShowPageTypeModal(true);
@@ -460,7 +457,7 @@ export default function TabNavigation({
 
         <div
           ref={scrollContainerRef}
-          className="flex items-center overflow-x-auto scrollbar-hide scroll-smooth whitespace-nowrap min-w-0 flex-1"
+          className="flex items-center overflow-x-auto scrollbar-hide scroll-smooth whitespace-nowrap min-w-0 flex-1 py-1 px-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           <SortableContext
@@ -526,8 +523,8 @@ export default function TabNavigation({
                               onSelectPageType={handlePageTypeSelect}
                               trigger={
                                 <button
-                                  onClick={(e) =>
-                                    handleInlineAddClick(index + 1, e)
+                                  onClick={() =>
+                                    handleInlineAddClick(index + 1)
                                   }
                                   className="size-5 bg-white p-1 rounded-full shadow-button outline outline-0.5 outline-offset--0.5 outline-neutral-200 flex justify-center items-center transition-all duration-200 ease-out hover:shadow-md hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 "
                                 >
@@ -570,7 +567,7 @@ export default function TabNavigation({
                   <button
                     ref={addButtonRef}
                     onClick={handleAddPageClick}
-                    className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-button border-gray-200 border flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus:outline-none group flex-shrink-0"
+                    className="h-8 px-2.5 py-1 bg-white z-10 rounded-lg shadow-button border-gray-200 border flex justify-center items-center gap-1.5 transition-all duration-300 ease-out hover:shadow-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#2F72E2] focus-visible:ring-offset-0 focus-visible:shadow-[0_0_0_4px_rgba(47,114,226,0.1)] group flex-shrink-0"
                   >
                     <div className="size-4 flex items-center justify-center relative transition-transform duration-300 ease-out ">
                       <PlusIcon className="size-4 text-zinc-900" />
