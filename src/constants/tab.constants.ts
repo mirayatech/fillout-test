@@ -4,7 +4,7 @@ export const DEFAULT_TABS: Tab[] = [
   { id: "info", label: "Info", type: "info" },
   { id: "details", label: "Details", type: "document" },
   { id: "other", label: "Other", type: "document" },
-  { id: "ending", label: "Ending", type: "completed" },
+  { id: "ending", label: "Ending", type: "ending" },
 ];
 
 export const TAB_DEFAULTS = {

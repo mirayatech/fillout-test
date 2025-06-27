@@ -120,7 +120,7 @@ export const PAGE_TYPE_CONFIGS: Record<string, PageTypeConfig> = {
     description: "Completion page",
     icon: CheckCircle2,
     iconColor: {
-      active: "text-green-600",
+      active: "text-red-600",
       inactive: "text-gray-600",
     },
     backgroundColor: "bg-green-100 text-green-600",
